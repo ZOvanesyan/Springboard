@@ -22,8 +22,6 @@ to your GitHub.
 Before starting with the questions, feel free to take your time,
 exploring the data, and getting acquainted with the 3 tables. */
 
-
-
 /* Q1: Some of the facilities charge a fee to members, but some do not.
 Please list the names of the facilities that do. */
 
@@ -31,12 +29,10 @@ SELECT name
 FROM Facilities
 WHERE membercost >0
 
-
 /* Q2: How many facilities do not charge a fee to members? */
 
 SELECT COUNT(*) FROM Facilities
 WHERE membercost = 0
-
 
 /* Q3: How can you produce a list of facilities that charge a fee to members,
 where the fee is less than 20% of the facility's monthly maintenance cost?
@@ -51,7 +47,7 @@ WHERE membercost < 0.20 * monthlymaintenance
 Write the query without using the OR operator. */
 
 SELECT * 
-FROM  `Facilities` 
+FROM `Facilities`
 WHERE facid
 IN ( 1, 5 ) 
 
@@ -60,16 +56,28 @@ IN ( 1, 5 )
 more than $100? Return the name and monthly maintenance of the facilities
 in question. */
 
-
+SELECT name, monthlymaintenance,
+CASE WHEN monthlymaintenance < 100
+THEN "cheap"
+ELSE "expensive"
+END AS price
+FROM `Facilities`
 
 /* Q6: You'd like to get the first and last name of the last member(s)
 who signed up. Do not use the LIMIT clause for your solution. */
 
+SELECT firstname, surname
+FROM Members members
+JOIN (SELECT MAX(joindate) AS joindate
+FROM Members) lastmember
+ON members.joindate = lastmember.joindate
 
 /* Q7: How can you produce a list of all members who have used a tennis court?
 Include in your output the name of the court, and the name of the member
 formatted as a single column. Ensure no duplicate data, and order by
 the member name. */
+
+
 
 
 /* Q8: How can you produce a list of bookings on the day of 2012-09-14 which
