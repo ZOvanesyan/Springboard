@@ -77,6 +77,17 @@ Include in your output the name of the court, and the name of the member
 formatted as a single column. Ensure no duplicate data, and order by
 the member name. */
 
+SELECT DISTINCT members.firstname, members.surname
+FROM Members members
+JOIN (
+SELECT facilities.facid, facilities.name, booking.memid
+FROM Facilities facilities
+JOIN Bookings booking ON booking.facid = facilities.facid
+WHERE facilities.name LIKE  '%Tennis%'
+)temp ON members.memid = temp.memid
+WHERE members.firstname NOT LIKE  '%guest%'
+ORDER BY members.firstname
+
 
 
 
