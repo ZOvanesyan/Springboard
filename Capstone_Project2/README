@@ -8,17 +8,13 @@ Running video processing container requires the following steps:
 
 1. Download the Dockerfile and two additional files (darkent.py & requirements.txt), cd to the directory and run:
 
-```bash
  docker build -t <iamge-name> .
-```
 
 where <image-name> will be used for the image tag
 
 2. Run the container:
 
-```bash
 docker run -it -v <path-to-video-dir>:/usr/src/app/video --name <container-name> <image-name>
-```
 
 where <path-to-video-dir> is the directory were test.mp4 file is stored for processing.
 <container-name> can be specified to tag the container. 
