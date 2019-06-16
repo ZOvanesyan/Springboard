@@ -1,0 +1,21 @@
+The Dockerfile and files are used to detect and tag objects, such as car, truck, persion and others on the video frames. We used the open cv library to brake the video into frames and analyze them with darknet open source neural networks. Then, we combined processed frames into resulting video. 
+
+The processing tokes place in docker container. The docker image for the container is build with python3.5 base. Also, it includes all darknet files downloaded from the source and installed with make command. 
+
+Running video processing container requires the following steps: 
+
+1. Download the Dockerfile and two additional files (darkent.py & requirements.txt), cd to the directory and run:
+
+ docker build -t <iamge-name> .
+
+where <image-name> will be used for the image tag
+
+2. Run the container:
+
+docker run -it -v <path-to-video-dir>:/usr/src/app/video --name <container-name> <image-name>
+
+where <path-to-video-dir> is the directory were test.mp4 file is stored for processing.
+<container-name> can be specified to tag the container. 
+
+Once the container finishes image processing, newly created video with processed frames will be written in the <path-to-video-dir> directory. 
+
