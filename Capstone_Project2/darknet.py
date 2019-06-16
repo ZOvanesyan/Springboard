@@ -5,6 +5,7 @@ import math
 import random
 import cv2
 import os
+from shutil import copy
 
 def sample(probs):
     s = sum(probs)
@@ -49,7 +50,7 @@ class METADATA(Structure):
     
 
 #lib = CDLL("/home/pjreddie/documents/darknet/libdarknet.so", RTLD_GLOBAL)
-lib = CDLL(b"/home/zaven/Yolo3/darknet/libdarknet.so", RTLD_GLOBAL)
+lib = CDLL(b"/usr/src/app/libdarknet.so", RTLD_GLOBAL)
 lib.network_width.argtypes = [c_void_p]
 lib.network_width.restype = c_int
 lib.network_height.argtypes = [c_void_p]
@@ -149,7 +150,7 @@ def detect(net, meta, image, thresh=.5, hier_thresh=.5, nms=.45):
 def process(image_folder, video_name, images, video, net, meta):
 
     for image in images:
-        image="images/" + image
+        image="Img/" + image
         
         r = detect(net, meta, image.encode('utf-8'))
 
@@ -190,7 +191,7 @@ def process(image_folder, video_name, images, video, net, meta):
             
             #add label on bounding box
             font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(img,res_type[1:],(c_x,c_y),font,0.55,box_color,1,cv2.LINE_AA)
+            cv2.putText(img,result[1:],(c_x,c_y),font,0.55,box_color,1,cv2.LINE_AA)
             
             i=i+1
 
@@ -201,11 +202,46 @@ def process(image_folder, video_name, images, video, net, meta):
     cv2.destroyAllWindows()
     video.release()
 
+    copy(video_name, '/usr/src/app/video/')
+    
+
+def FrameCapture(path): 
+      
+    import os
+
+    # Path to video file 
+    vidObj = cv2.VideoCapture(path) 
+  
+    # Used as counter variable 
+    count = 0
+  
+    # checks whether frames were extracted 
+    success = 1
+  
+    while success: 
+  
+        # vidObj object calls read 
+        # function extract frames 
+        success, image = vidObj.read() 
+  
+        # Saves the frames with frame-count 
+        cv2.imwrite("/usr/src/app/Img/frame%d.jpg" % count, image) 
+  
+        count += 1
+   
+    count = count - 1
+    filename = "frame" + str(count) + ".jpg"
+    path = "/usr/src/app/Img/" + filename
+
+    os.remove(path)    
+    return 0 
 
 if __name__ == "__main__":
 
-    image_folder = 'images'
+    image_folder = 'Img'
     video_name = 'video.avi'
+
+    FrameCapture('/usr/src/app/video/test.mp4')
 
     images = [img for img in os.listdir(image_folder) if img.endswith(".jpg")]
     frame = cv2.imread(os.path.join(image_folder, images[0]), cv2.COLOR_BGR2RGB)
@@ -213,8 +249,8 @@ if __name__ == "__main__":
 
     video = cv2.VideoWriter(video_name, 0, 1, (width,height), cv2.COLOR_BGR2RGB)
     
-    net = load_net(b"/home/zaven/Yolo3/darknet/cfg/yolov3.cfg", b"/home/zaven/Yolo3/darknet/yolov3.weights", 0)
-    meta = load_meta(b"/home/zaven/Yolo3/darknet/cfg/coco.data")
+    net = load_net(b"/usr/src/app/cfg/yolov3.cfg", b"/usr/src/app/yolov3.weights", 0)
+    meta = load_meta(b"/usr/src/app/cfg/coco.data")
  
     #process(image_folder, video_name, images, video, net, meta)
     p1 = Process(target = process(image_folder, video_name, images, video, net, meta))
